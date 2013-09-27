@@ -42,6 +42,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
             ':hashtag'  =>$hashtag,
             ':network'  =>$network
         );
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         $row = $this->getDataRowAsArray($ps);
 
@@ -58,6 +59,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
                     ':post_id' =>(string)$post_id,
                     ':network' => $network
             );
+            if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
             $ps  = $this->execute($q, $vars);
             $res = $this->getUpdateCount($ps);
             if ($res > 0) {
@@ -66,6 +68,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
                 $vars  = array(
                     ':id'  =>$hashtag_id
                 );
+                if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
                 $ps = $this->execute($q, $vars);
                 $res = $this->getUpdateCount($ps);
                 if (!$res) {
@@ -83,6 +86,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
                 ':network'  =>$network,
                 ':count' => 1
             );
+            if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
             $ps = $this->execute($q, $vars);
             $hashtag_id = $this->getInsertId($ps);
             if (!$hashtag_id) {
@@ -98,6 +102,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
                         ':post_id' =>(string)$post_id,
                         ':network' => $network
                 );
+                if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
                 $ps  = $this->execute($q, $vars);
                 $res = $this->getUpdateCount($ps);
             }
@@ -110,6 +115,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
             ':post_id' => $post_id,
             ':network' => $network
         );
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         $all_rows = $this->getDataRowsAsArrays($ps);
         if ($all_rows) {
@@ -124,6 +130,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
         $vars = array(
             ':hashtag_id' => $hashtag_id
         );
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         $all_rows = $this->getDataRowsAsArrays($ps);
         if ($all_rows) {
@@ -136,6 +143,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
     public function deleteHashtagsPostsByHashtagID($hashtag_id) {
         $q  = "DELETE FROM #prefix#hashtags_posts WHERE hashtag_id=:hashtag_id;";
         $vars = array(':hashtag_id'=>$hashtag_id);
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         return $this->getDeleteCount($ps);
     }
@@ -148,6 +156,7 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
                 ':post_id'=>(string)$post_id,
                 ':network'=>$network
         );
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         return $this->getDataIsReturned($ps);
     }
@@ -165,18 +174,21 @@ class HashtagPostMySQLDAO extends PDODAO implements HashtagPostDAO {
 
         $q = "SELECT COUNT(p.id) AS total ";
         $q .= "FROM #prefix#posts p, #prefix#hashtags_posts hp, #prefix#hashtags h ";
-        $q .= "WHERE  p.post_id= hp.post_id AND hp.hashtag_id = h.id AND p.network = hp.network AND h.id = :hashtag_id ";
+        $q .= "WHERE  p.post_id= hp.post_id AND hp.hashtag_id = h.id AND p.network = hp.network ";
+        $q .= "AND h.id = :hashtag_id ";
         $q .= "AND YEAR(pub_date) = YEAR($for_date) AND (DAYOFMONTH(pub_date)=DAYOFMONTH($for_date)) ";
         $q .= "AND (MONTH(pub_date)=MONTH($for_date)); ";
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         $result = $this->getDataRowAsArray($ps);
         return $result['total'];
     }
-    
+
     public function getLastPostIDByHashtag($hashtag_id) {
-        $vars = array(':hashtag_id'=>$hashtag_id);       
+        $vars = array(':hashtag_id'=>$hashtag_id);
         $q = "SELECT max(post_id) AS post_id FROM  #prefix#hashtags_posts ";
-        $q .= "WHERE  hashtag_id = :hashtag_id;";      
+        $q .= "WHERE  hashtag_id = :hashtag_id;";
+        if ($this->profiler_enabled) { Profiler::setDAOMethod(__METHOD__); }
         $ps = $this->execute($q, $vars);
         $result = $this->getDataRowAsArray($ps);
         return $result['post_id'];
