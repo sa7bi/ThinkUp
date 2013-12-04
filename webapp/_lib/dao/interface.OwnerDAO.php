@@ -221,4 +221,12 @@ interface OwnerDAO {
      * @returns bool True if credentials are valid, false if not.
      */
     public function isOwnerAuthorizedViaPrivateAPIKey($email, $private_api_key);
+
+    /**
+     * Update an owner's notification frequency.
+     * @param str $email Email address of the owner to update
+     * @param str $notification_frequency One of daily, weekly, never, both
+     * @return int Count of affected rows
+     */
+    public function setNotificationFrequency($email, $notification_frequency);
 }
