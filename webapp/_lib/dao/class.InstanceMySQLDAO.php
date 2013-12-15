@@ -632,7 +632,7 @@ class InstanceMySQLDAO extends PDOCorePluginDAO implements InstanceDAO {
         $ps = $this->execute($q, $vars);
         return $this->getUpdateCount($ps);
     }
-    
+
     public function getInstancesPosts($start_date, $end_date, $network, $limit) {
         $q = "SELECT i.network_user_id, ";
         $q .= "i.network_username, ";
@@ -663,7 +663,7 @@ class InstanceMySQLDAO extends PDOCorePluginDAO implements InstanceDAO {
         $ps = $this->execute($q, $vars);
         return $this->getDataRowsAsArrays($ps);
     }
-    
+
     public function getInstancesHashtags($start_date, $end_date, $network, $limit) {
         $q = "SELECT ";
         $q .= "i.network_user_id, ";
@@ -698,5 +698,4 @@ class InstanceMySQLDAO extends PDOCorePluginDAO implements InstanceDAO {
         $ps = $this->execute($q, $vars);
         return $this->getDataRowsAsArrays($ps);
     }
-
 }
