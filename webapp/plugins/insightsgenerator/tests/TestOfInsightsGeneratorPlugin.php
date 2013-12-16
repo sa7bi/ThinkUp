@@ -153,111 +153,119 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $sent = Mailer::getLastMail();
         $this->assertEqual('', $sent, 'Should not send again same day');
     }
+
     public function testWeeklySendSetting() {
-        $plugin = new InsightsGeneratorPlugin();
-        $day_to_run = date('D', strtotime("Sunday +".$plugin::WEEKLY_DIGEST_DAY_OF_WEEK." days"));
-        $day_not_to_run = date('D', strtotime("Sunday +".(($plugin::WEEKLY_DIGEST_DAY_OF_WEEK+1)%6)." days"));
-        $plugin_dao = DAOFactory::getDAO('PluginDAO');
-        $plugin_id = $plugin_dao->getPluginId($plugin->folder_name);
+        //PHP 5.2 doesn't like the strtotime strings this test uses
+        $version = explode('.', PHP_VERSION); //don't run this test for php less than 5.3
+        if ($version[0] >= 5 && $version[1] >= 3) {
+            $plugin = new InsightsGeneratorPlugin();
+            $day_to_run = date('D', strtotime("Sunday +".$plugin::WEEKLY_DIGEST_DAY_OF_WEEK." days"));
+            $day_not_to_run = date('D', strtotime("Sunday +".(($plugin::WEEKLY_DIGEST_DAY_OF_WEEK+1)%6)." days"));
+            $plugin_dao = DAOFactory::getDAO('PluginDAO');
+            $plugin_id = $plugin_dao->getPluginId($plugin->folder_name);
 
-        $builders = array();
-        $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'weekly@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'weekly'));
-        $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
-        'auth_error'=>''));
-        $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
-        'network'=>'twitter', 'is_activated'=>1, 'is_public'=>1));
-        $builders[] = FixtureBuilder::build('insights', array('id'=>1, 'instance_id'=>5,
-        'slug'=>'new_group_memberships', 'prefix'=>'Made the List:',
-        'text'=>'CDMoyer is on 29 new lists',
-        'time_generated'=>date('Y-m-d 03:00:00', strtotime($day_to_run.' 5pm')-(60*60*24*3))));
+            $builders = array();
+            $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
+            'email'=>'weekly@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'weekly'));
+            $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
+            'auth_error'=>''));
+            $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
+            'network'=>'twitter', 'is_activated'=>1, 'is_public'=>1));
+            $builders[] = FixtureBuilder::build('insights', array('id'=>1, 'instance_id'=>5,
+            'slug'=>'new_group_memberships', 'prefix'=>'Made the List:',
+            'text'=>'CDMoyer is on 29 new lists',
+            'time_generated'=>date('Y-m-d 03:00:00', strtotime($day_to_run.' 5pm')-(60*60*24*3))));
 
-        $plugin_option_dao = DAOFactory::GetDAO('PluginOptionDAO');
-        $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
-        $this->assertEqual(count($options), 0);
+            $plugin_option_dao = DAOFactory::GetDAO('PluginOptionDAO');
+            $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+            $this->assertEqual(count($options), 0);
 
-        $this->simulateLogin('weekly@example.com');
+            $this->simulateLogin('weekly@example.com');
 
-        $plugin->current_timestamp = strtotime($day_not_to_run.' 5pm');
-        unlink(FileDataManager::getDataPath(Mailer::EMAIL));
-        $plugin->crawl();
-        $sent = Mailer::getLastMail();
-        $this->assertEqual('', $sent, 'Should not send on '.$day_not_to_run);
+            $plugin->current_timestamp = strtotime($day_not_to_run.' 5pm');
+            unlink(FileDataManager::getDataPath(Mailer::EMAIL));
+            $plugin->crawl();
+            $sent = Mailer::getLastMail();
+            $this->assertEqual('', $sent, 'Should not send on '.$day_not_to_run);
 
-        $plugin->current_timestamp = strtotime($day_to_run.' 5pm');
-        $plugin->crawl();
+            $plugin->current_timestamp = strtotime($day_to_run.' 5pm');
+            $plugin->crawl();
 
-        $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
-        $this->assertEqual(count($options), 2);
-        $this->assertNotNull($options['last_weekly_email']);
-        $this->assertNotNull($options['last_daily_email']);
-        $sent = Mailer::getLastMail();
-        $this->assertNotEqual('', $sent);
-        $this->assertPattern('/to.*weekly@example.com/', $sent);
-        $this->assertPattern('/29 new lists/', $sent);
+            $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+            $this->assertEqual(count($options), 2);
+            $this->assertNotNull($options['last_weekly_email']);
+            $this->assertNotNull($options['last_daily_email']);
+            $sent = Mailer::getLastMail();
+            $this->assertNotEqual('', $sent);
+            $this->assertPattern('/to.*weekly@example.com/', $sent);
+            $this->assertPattern('/29 new lists/', $sent);
 
-        unlink(FileDataManager::getDataPath(Mailer::EMAIL));
-        $plugin->crawl();
-        $sent = Mailer::getLastMail();
-        $this->assertEqual('', $sent, 'Should not send again same day');
+            unlink(FileDataManager::getDataPath(Mailer::EMAIL));
+            $plugin->crawl();
+            $sent = Mailer::getLastMail();
+            $this->assertEqual('', $sent, 'Should not send again same day');
+        }
     }
-/*
 
     public function testBothSendSetting() {
-        unlink(FileDataManager::getDataPath(Mailer::EMAIL));
-        $plugin = new InsightsGeneratorPlugin();
-        $day_to_run = date('D', strtotime("Sunday +".$plugin::WEEKLY_DIGEST_DAY_OF_WEEK." days"));
-        $day_not_to_run = date('D', strtotime("Sunday +".(($plugin::WEEKLY_DIGEST_DAY_OF_WEEK+1)%6)." days"));
+        //PHP 5.2 doesn't like the strtotime strings this test uses
+        $version = explode('.', PHP_VERSION); //don't run this test for php less than 5.3
+        if ($version[0] >= 5 && $version[1] >= 3) {
+            unlink(FileDataManager::getDataPath(Mailer::EMAIL));
+            $plugin = new InsightsGeneratorPlugin();
+            $day_to_run = date('D', strtotime("Sunday +".$plugin::WEEKLY_DIGEST_DAY_OF_WEEK." days"));
+            $day_not_to_run = date('D', strtotime("Sunday +".(($plugin::WEEKLY_DIGEST_DAY_OF_WEEK+1)%6)." days"));
 
-        $builders = array();
-        $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'both@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'both'));
-        $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
-        'auth_error'=>''));
-        $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
-        'network'=>'twitter', 'is_activated'=>1, 'is_public'=>1));
-        $builders[] = FixtureBuilder::build('insights', array('id'=>1, 'instance_id'=>5,
-        'slug'=>'new_group_memberships', 'prefix'=>'Made the List:',
-        'text'=>'CDMoyer is on 29 new lists',
-        'time_generated'=>date('Y-m-d 03:00:00', strtotime($day_not_to_run.' 1am'))));
+            $builders = array();
+            $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
+            'email'=>'both@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'both'));
+            $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
+            'auth_error'=>''));
+            $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
+            'network'=>'twitter', 'is_activated'=>1, 'is_public'=>1));
+            $builders[] = FixtureBuilder::build('insights', array('id'=>1, 'instance_id'=>5,
+            'slug'=>'new_group_memberships', 'prefix'=>'Made the List:',
+            'text'=>'CDMoyer is on 29 new lists',
+            'time_generated'=>date('Y-m-d 03:00:00', strtotime($day_not_to_run.' 1am'))));
 
-        $plugin_option_dao = DAOFactory::GetDAO('PluginOptionDAO');
-        $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
-        $this->assertEqual(count($options), 0);
+            $plugin_option_dao = DAOFactory::GetDAO('PluginOptionDAO');
+            $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+            $this->assertEqual(count($options), 0);
 
-        $this->simulateLogin('both@example.com');
+            $this->simulateLogin('both@example.com');
 
-        // This should just send daily
-        $plugin->current_timestamp = strtotime($day_not_to_run.' 5pm');
-        $plugin->crawl();
+            // This should just send daily
+            $plugin->current_timestamp = strtotime($day_not_to_run.' 5pm');
+            $plugin->crawl();
 
-        $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+            $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
 
-        $this->assertEqual(count($options), 1);
-        $this->assertNotNull($options['last_daily_email']);
-        $this->assertNull($options['last_weekly_email']);
-        $sent = Mailer::getLastMail();
-        $this->assertNotEqual('', $sent);
-        $this->assertPattern('/to.*both@example.com/', $sent);
-        $this->assertPattern('/29 new lists/', $sent);
+            $this->assertEqual(count($options), 1);
+            $this->assertNotNull($options['last_daily_email']);
+            $this->assertNull($options['last_weekly_email']);
+            $sent = Mailer::getLastMail();
+            $this->assertNotEqual('', $sent);
+            $this->assertPattern('/to.*both@example.com/', $sent);
+            $this->assertPattern('/29 new lists/', $sent);
 
-        // This should just send both
-        $plugin_option_dao->deleteOption($options['last_daily_email']->id);
-        $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
-        $this->assertEqual(count($options), 0);
-        $plugin->current_timestamp = strtotime($day_to_run.' 5pm');
-        $plugin->crawl();
+            // This should just send both
+            $plugin_option_dao->deleteOption($options['last_daily_email']->id);
+            $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+            $this->assertEqual(count($options), 0);
+            $plugin->current_timestamp = strtotime($day_to_run.' 5pm');
+            $plugin->crawl();
 
-        $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+            $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
 
-        $this->assertEqual(count($options), 2);
-        $this->assertNotNull($options['last_daily_email']);
-        $this->assertNotNull($options['last_weekly_email']);
-        $sent = Mailer::getLastMail();
-        $this->assertNotEqual('', $sent);
-        $this->assertPattern('/to.*both@example.com/', $sent);
-        $this->assertPattern('/29 new lists/', $sent);
-        $this->assertPattern('/This week/', $sent);
+            $this->assertEqual(count($options), 2);
+            $this->assertNotNull($options['last_daily_email']);
+            $this->assertNotNull($options['last_weekly_email']);
+            $sent = Mailer::getLastMail();
+            $this->assertNotEqual('', $sent);
+            $this->assertPattern('/to.*both@example.com/', $sent);
+            $this->assertPattern('/29 new lists/', $sent);
+            $this->assertPattern('/This week/', $sent);
+        }
     }
 
     public function testMultiUser() {
