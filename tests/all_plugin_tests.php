@@ -33,6 +33,7 @@ require_once THINKUP_WEBAPP_PATH.'_lib/extlib/simpletest/mock_objects.php';
 $RUNNING_ALL_TESTS = true;
 
 $plugin_tests = new TestSuite('Plugin tests');
+/*
 $plugin_tests->add(new TestOfExpandURLsPlugin());
 $plugin_tests->add(new TestOfExpandURLsPluginConfigurationController());
 $plugin_tests->add(new TestOfFlickrAPIAccessor());
@@ -72,8 +73,10 @@ $plugin_tests->add(new TestOfYouTubePlugin());
 $plugin_tests->add(new TestOfYouTubePluginConfigurationController());
 $plugin_tests->add(new TestOfInsightPluginParent());
 $plugin_tests->add(new TestOfInsightsGeneratorPluginConfigurationController());
-//$plugin_tests->add(new TestOfInsightsGeneratorPlugin());
+*/
+$plugin_tests->add(new TestOfInsightsGeneratorPlugin());
 //Insights
+/*
 $plugin_tests->add(new TestOfArchivedPostsInsight());
 $plugin_tests->add(new TestOfAllAboutYouInsight());
 $plugin_tests->add(new TestOfBigReshareInsight());
@@ -98,6 +101,7 @@ $plugin_tests->add(new TestOfLikeSpikeInsight());
 $plugin_tests->add(new TestOfViewSpikeInsight());
 $plugin_tests->add(new TestOfSubscriberChangeInsight());
 $plugin_tests->add(new TestOfMinutesViewedInsight());
+*/
 $version = explode('.', PHP_VERSION); //dont run redis test for php less than 5.3
 if ($version[0] >= 5 && $version[1] >= 3) { //only run Redis tests if PHP 5.3
     $plugin_tests->add(new TestOfStreamMessageQueueRedis());

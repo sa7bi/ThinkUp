@@ -65,7 +65,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
         $this->assertEqual(count($options), 0);
     }
-
+/*
     public function testNeverSendSetting() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
@@ -309,4 +309,5 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $this->assertPattern('/daily digest to admin@example/', $last_log);
         $this->assertPattern('/daily digest to normal@example/', $last_log);
     }
+    */
 }
