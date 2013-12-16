@@ -206,7 +206,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
             $this->assertEqual('', $sent, 'Should not send again same day');
         }
     }
-
+*/
     public function testBothSendSetting() {
         //PHP 5.2 doesn't like the strtotime strings this test uses
         $version = explode('.', PHP_VERSION); //don't run this test for php less than 5.3
@@ -267,7 +267,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
             $this->assertPattern('/This week/', $sent);
         }
     }
-*/
+
     public function testMultiUser() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $plugin = new InsightsGeneratorPlugin();
