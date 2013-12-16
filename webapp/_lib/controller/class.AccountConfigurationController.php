@@ -278,11 +278,11 @@ class AccountConfigurationController extends ThinkUpAuthController {
             $new_freq = isset($_POST['notificationfrequency']) ? $_POST['notificationfrequency'] : null;
             $updates = 0;
             if ($new_freq && isset($this->notification_frequencies[$new_freq])) {
-                $updates = $owner_dao->setNotificationFrequency($this->getLoggedInUser(), $new_freq);
+                $updates = $owner_dao->setEmailNotificationFrequency($this->getLoggedInUser(), $new_freq);
             }
             if ($updates) {
                 // Update the user in the view to match
-                $owner->notification_frequency = $new_freq;
+                $owner->email_notification_frequency = $new_freq;
                 $this->addToView('owner', $owner);
                 $this->addSuccessMessage('Your email notification frequency has been updated.', 'notifications');
             }

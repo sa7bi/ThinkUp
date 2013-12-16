@@ -158,13 +158,13 @@ class InsightsGeneratorPlugin extends Plugin implements CrawlerPlugin {
         }
     }
 
-    /*
+    /**
      * Email daily insight digest.
      * @param Owner $owner Owner to send for
      * return bool Whether email was sent
      */
     private function sendDailyDigest($owner) {
-        if (in_array($owner->notification_frequency, array('both','daily'))) {
+        if (in_array($owner->email_notification_frequency, array('both','daily'))) {
             return $this->sendDigestSinceWithTemplate($owner, 'Yesterday 4am', '_email.daily_insight_digest.tpl');
         } else {
             return false;
@@ -172,20 +172,20 @@ class InsightsGeneratorPlugin extends Plugin implements CrawlerPlugin {
 
     }
 
-    /*
+    /**
      * Email weekly insight digest.
      * @param Owner $owner Owner to send for
      * return bool Whether email was sent
      */
     private function sendWeeklyDigest($owner) {
-        if (in_array($owner->notification_frequency, array('both','weekly'))) {
+        if (in_array($owner->email_notification_frequency, array('both','weekly'))) {
             return $this->sendDigestSinceWithTemplate($owner, '1 week ago 4am', '_email.weekly_insight_digest.tpl');
         } else {
             return false;
         }
     }
 
-    /*
+    /**
      * Send out insight email digest for a given time period.
      * @param Owner $owner Owner to send for
      * @param str $start When to start insight lookup

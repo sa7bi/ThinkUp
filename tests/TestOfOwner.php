@@ -41,7 +41,7 @@ class TestOfOwner extends ThinkUpBasicUnitTestCase {
     public function testConstructor() {
         $complete_owner_values = array('id'=>10, "full_name"=>"ThinkUp J. User", "email"=>'tu_user@example.com',
         'last_login'=>'1/1/2010', 'is_admin'=>0, 'is_activated'=>1, 'account_status'=>'', 'failed_logins'=>19,
-        'notification_frequency' => 'both'
+        'email_notification_frequency' => 'both'
         );
 
         $owner = new Owner($complete_owner_values);
@@ -49,7 +49,7 @@ class TestOfOwner extends ThinkUpBasicUnitTestCase {
         $this->assertEqual($owner->full_name, "ThinkUp J. User");
         $this->assertEqual($owner->email, 'tu_user@example.com');
         $this->assertEqual($owner->last_login, '1/1/2010');
-        $this->assertEqual($owner->notification_frequency, 'both');
+        $this->assertEqual($owner->email_notification_frequency, 'both');
         $this->assertFalse($owner->is_admin);
         $this->assertTrue($owner->is_activated);
     }

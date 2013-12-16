@@ -73,9 +73,9 @@ class Owner {
      */
     var $api_key_private;
     /**
-     * @var str When the user should receive insight digests.
+     * @var str How often to send email notifications (daily, weekly, both, never).
      */
-    var $notification_frequency;
+    var $email_notification_frequency;
     /**
      * @var arr Non-persistent, used for UI, array of instances associated with owner.
      */
@@ -93,7 +93,7 @@ class Owner {
             $this->account_status = $row['account_status'];
             $this->api_key = $row['api_key'];
             $this->api_key_private = $row['api_key_private'];
-            $this->notification_frequency = $row['notification_frequency'];
+            $this->email_notification_frequency = $row['email_notification_frequency'];
         }
     }
     /**

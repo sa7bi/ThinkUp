@@ -146,13 +146,13 @@
     <br><br>
     {include file="_usermessage.tpl" field='notifications'}
     <h3><i class="icon-calendar icon-muted"></i> Notification Frequency</h3><br />
-    <form name="setnotificationfrequency" id="setnotificationfrequency" class="form-horizontal" method="post" action="index.php?m=manage#instances">
+    <form name="setEmailNotificationFrequency" id="setEmailNotificationFrequency" class="form-horizontal" method="post" action="index.php?m=manage#instances">
         <div class="control-group">
            <label class="control-label" for="confirm_password">Get insights via email:</label>
            <div class="controls">
              <select name="notificationfrequency">
              {foreach from=$notification_options item=description key=key}
-                 <option value="{$key}" {if $key eq $owner->notification_frequency}selected="selected"{/if}>{$description}</option>
+                 <option value="{$key}" {if $key eq $owner->email_notification_frequency}selected="selected"{/if}>{$description}</option>
              {/foreach}
              </select>
           </div>

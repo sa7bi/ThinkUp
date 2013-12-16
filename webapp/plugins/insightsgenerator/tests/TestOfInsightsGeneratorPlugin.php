@@ -48,7 +48,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User',
-        'email'=>'never@example.com', 'is_activated'=>1, 'notification_frequency' => 'never', 'is_admin' => 0));
+        'email'=>'never@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'never', 'is_admin' => 0));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
         'auth_error'=>''));
         $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
@@ -70,7 +70,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'never@example.com', 'is_activated'=>1, 'notification_frequency' => 'never'));
+        'email'=>'never@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'never'));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
         'auth_error'=>''));
         $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
@@ -112,7 +112,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'daily@example.com', 'is_activated'=>1, 'notification_frequency' => 'daily'));
+        'email'=>'daily@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'daily'));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
         'auth_error'=>''));
         $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
@@ -134,6 +134,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $plugin->crawl();
 
         $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
+        $this->debug(Utils::varDumpToString($options));
         $this->assertEqual(count($options), 1, 'Just last_daily_email set');
         $this->assertNotNull($options['last_daily_email'], 'Just last_daily_email set');
         $this->assertNull($options['last_weekly_email'], 'Just last_daily_email set');
@@ -158,7 +159,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
 
         $builders = array();
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'weekly@example.com', 'is_activated'=>1, 'notification_frequency' => 'weekly'));
+        'email'=>'weekly@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'weekly'));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
         'auth_error'=>''));
         $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
@@ -206,7 +207,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
 
         $builders = array();
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'both@example.com', 'is_activated'=>1, 'notification_frequency' => 'both'));
+        'email'=>'both@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'both'));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5,
         'auth_error'=>''));
         $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,
@@ -261,9 +262,9 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
 
         $builders = array();
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User','is_admin'=>1,
-        'email'=>'admin@example.com', 'is_activated'=>1, 'notification_frequency' => 'daily'));
+        'email'=>'admin@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'daily'));
         $builders[] = FixtureBuilder::build('owners', array('id'=>2, 'full_name'=>'ThinkUp J. User','is_admin'=>0,
-        'email'=>'normal@example.com', 'is_activated'=>1, 'notification_frequency' => 'daily'));
+        'email'=>'normal@example.com', 'is_activated'=>1, 'email_notification_frequency' => 'daily'));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>1, 'instance_id'=>5, 'id'=>1));
         $builders[] = FixtureBuilder::build('owner_instances', array('owner_id'=>2, 'instance_id'=>6, 'id'=>2));
         $builders[] = FixtureBuilder::build('instances', array('network_username'=>'cdmoyer', 'id' => 5,

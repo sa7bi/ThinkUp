@@ -65,7 +65,7 @@ class TestOfAccountConfigurationController extends ThinkUpUnitTestCase {
         $builders[] = FixtureBuilder::build('owners', array('id'=>1, 'full_name'=>'ThinkUp J. User',
         'email'=>'me@example.com', 'is_activated'=>1, 'pwd'=>$hashed_pass,
         'pwd_salt'=> OwnerMySQLDAO::$default_salt, 'api_key' => 'c9089f3c9adaf0186f6ffb1ee8d6501c',
-        'notification_frequency' => 'daily'));
+        'email_notification_frequency' => 'daily'));
 
         $builders[] = FixtureBuilder::build('owners', array('id'=>2, 'full_name'=>'ThinkUp J. Admin',
         'email'=>'admin@example.com', 'is_activated'=>1, 'is_admin'=>1));
@@ -802,7 +802,7 @@ class TestOfAccountConfigurationController extends ThinkUpUnitTestCase {
     public function testAuthControlLoggedInChangeNotificationFrequency() {
         $owner_dao = new OwnerMySQLDAO();
         $owner = $owner_dao->getByEmail('me@example.com');
-        $this->assertEqual('daily', $owner->notification_frequency);
+        $this->assertEqual('daily', $owner->email_notification_frequency);
 
         $this->simulateLogin('me@example.com', false, true);
         $controller = new AccountConfigurationController(true);
@@ -817,7 +817,7 @@ class TestOfAccountConfigurationController extends ThinkUpUnitTestCase {
         $controller->go();
         $owner = $owner_dao->getByEmail('me@example.com');
         // No CSRF shouldn't update
-        $this->assertNotEqual('both', $owner->notification_frequency);
+        $this->assertNotEqual('both', $owner->email_notification_frequency);
 
         $this->simulateLogin('me@example.com', false, true);
         $_POST['updatefrequency'] = 'Update Frequency';
@@ -828,8 +828,8 @@ class TestOfAccountConfigurationController extends ThinkUpUnitTestCase {
         $output = $controller->go();
         $owner = $owner_dao->getByEmail('me@example.com');
         // bad value, shouldn't update
-        $this->assertNotEqual('bananas', $owner->notification_frequency);
-        $this->assertEqual('daily', $owner->notification_frequency);
+        $this->assertNotEqual('bananas', $owner->email_notification_frequency);
+        $this->assertEqual('daily', $owner->email_notification_frequency);
         $this->assertNoPattern('/email notification frequency has been updated/', $output);
 
         $this->simulateLogin('me@example.com', false, true);
@@ -839,8 +839,8 @@ class TestOfAccountConfigurationController extends ThinkUpUnitTestCase {
         $controller = new AccountConfigurationController(true);
         $output = $controller->go();
         $owner = $owner_dao->getByEmail('me@example.com');
-        $this->assertNotEqual('daily', $owner->notification_frequency);
-        $this->assertEqual('both', $owner->notification_frequency);
+        $this->assertNotEqual('daily', $owner->email_notification_frequency);
+        $this->assertEqual('both', $owner->email_notification_frequency);
         $this->assertNoPattern('/"daily"[^>]*selected/', $output);
         $this->assertPattern('/"both"[^>]*selected/', $output);
         $this->assertPattern('/email notification frequency has been updated/', $output);

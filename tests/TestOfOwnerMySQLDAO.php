@@ -56,15 +56,15 @@ class TestOfOwnerMySQLDAO extends ThinkUpUnitTestCase {
         'email'=>'ttuser@example.com', 'is_activated'=>0, 'pwd'=>$pwd1,
         'pwd_salt'=>OwnerMySQLDAO::$default_salt, 'activation_code'=>'8888',
         'account_status'=>'', 'api_key' => 'c9089f3c9adaf0186f6ffb1ee8d6501c',
-        'notification_frequency'=>'both'));
+        'email_notification_frequency'=>'both'));
 
         $builders[] = FixtureBuilder::build('owners', array('full_name'=>'ThinkUp J. User1',
         'email'=>'ttuser1@example.com', 'is_activated'=>1, 'pwd'=>$pwd2,
-        'pwd_salt'=>OwnerMySQLDAO::$default_salt, 'account_status'=>'', 'notification_frequency'=>'never'));
+        'pwd_salt'=>OwnerMySQLDAO::$default_salt, 'account_status'=>'', 'email_notification_frequency'=>'never'));
 
         $builders[] = FixtureBuilder::build('owners', array('full_name'=>'Salted User',
         'email'=>'salteduser@example.com', 'is_activated'=>1, 'pwd'=>$pwd3, 'pwd_salt'=>$salt,
-        'account_status'=>'','notification_frequency'=>'both'));
+        'account_status'=>'','email_notification_frequency'=>'both'));
 
         return $builders;
     }
@@ -86,7 +86,7 @@ class TestOfOwnerMySQLDAO extends ThinkUpUnitTestCase {
         $this->assertEqual($existing_owner->failed_logins, 0);
         $this->assertEqual($existing_owner->account_status, '');
         $this->assertEqual($existing_owner->api_key, 'c9089f3c9adaf0186f6ffb1ee8d6501c');
-        $this->assertEqual($existing_owner->notification_frequency, 'both');
+        $this->assertEqual($existing_owner->email_notification_frequency, 'both');
 
         //owner does not exist
         $non_existing_owner = $this->DAO->getByEmail('idontexist@example.com');
@@ -109,7 +109,7 @@ class TestOfOwnerMySQLDAO extends ThinkUpUnitTestCase {
         $this->assertEqual($existing_owner->failed_logins, 0);
         $this->assertEqual($existing_owner->account_status, '');
         $this->assertEqual($existing_owner->api_key, 'c9089f3c9adaf0186f6ffb1ee8d6501c');
-        $this->assertEqual($existing_owner->notification_frequency, 'both');
+        $this->assertEqual($existing_owner->email_notification_frequency, 'both');
     }
 
     /**
@@ -120,8 +120,8 @@ class TestOfOwnerMySQLDAO extends ThinkUpUnitTestCase {
         $this->assertEqual(sizeof($all_owners), 3);
         $this->assertEqual($all_owners[0]->email, 'ttuser@example.com');
         $this->assertEqual($all_owners[1]->email, 'ttuser1@example.com');
-        $this->assertEqual($all_owners[0]->notification_frequency, 'both');
-        $this->assertEqual($all_owners[1]->notification_frequency, 'never');
+        $this->assertEqual($all_owners[0]->email_notification_frequency, 'both');
+        $this->assertEqual($all_owners[1]->email_notification_frequency, 'never');
     }
 
     /**
@@ -231,7 +231,7 @@ class TestOfOwnerMySQLDAO extends ThinkUpUnitTestCase {
         $this->assertNotEqual('s3cr3t', $data['pwd']); //pwd should be hashed, so not equal
         $this->assertEqual(0, $data['is_activated']);
         $this->assertEqual(0, $data['is_admin']);
-        $this->assertEqual('daily', $data['notification_frequency']); // daily is default
+        $this->assertEqual('daily', $data['email_notification_frequency']); // daily is default
         $this->assertEqual('0000-00-00', $data['last_login']);
         $this->assertEqual('ttuser2@example.com', $data['email']);
         $this->assertTrue( time() < ($data['joined_ts'] + (60 * 60 * 25) )); // joind within last 25 hours
@@ -277,15 +277,15 @@ class TestOfOwnerMySQLDAO extends ThinkUpUnitTestCase {
     }
 
     /**
-     * Test setNotificationFrequency
+     * Test setEmailNotificationFrequency
      */
-    public function testSetNotificationFrequency() {
+    public function testsetEmailNotificationFrequency() {
         $existing_owner = $this->DAO->getByEmail('ttuser@example.com');
-        $this->assertEqual('both', $existing_owner->notification_frequency);
-        $this->DAO->setNotificationFrequency($existing_owner->email, 'daily');
+        $this->assertEqual('both', $existing_owner->email_notification_frequency);
+        $this->DAO->setEmailNotificationFrequency($existing_owner->email, 'daily');
 
         $existing_owner = $this->DAO->getByEmail('ttuser@example.com');
-        $this->assertEqual('daily', $existing_owner->notification_frequency);
+        $this->assertEqual('daily', $existing_owner->email_notification_frequency);
     }
 
     /**
