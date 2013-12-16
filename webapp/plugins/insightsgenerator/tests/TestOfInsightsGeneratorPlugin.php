@@ -251,7 +251,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $this->assertNotEqual('', $sent);
         $this->assertPattern('/to.*both@example.com/', $sent);
         $this->assertPattern('/29 new lists/', $sent);
-        $this->assertPattern('/Weekly/', $sent);
+        $this->assertPattern('/This week/', $sent);
     }
 
     public function testMultiUser() {
