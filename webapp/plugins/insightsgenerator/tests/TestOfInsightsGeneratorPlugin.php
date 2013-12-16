@@ -96,7 +96,15 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $plugin_dao = DAOFactory::getDAO('PluginDAO');
         $plugin_id = $plugin_dao->getPluginId($plugin->folder_name);
         $plugin_option_dao->updateOption($plugin_id, 'last_daily_email', date('Y-m-d', strtotime('last year')));
-        $plugin_option_dao->updateOption($plugin_id, 'last_weekly_email', date('Y-m-d', strtotime('last year')));
+        //If it's the right day of the week, the crawl sets this, if not do it manually
+        if (!$plugin_option_dao->updateOption($plugin_id, 'last_weekly_email', date('Y-m-d', strtotime('last year')))){
+            try {
+                $plugin_option_dao->insertOption($plugin_id, 'last_weekly_email', date('Y-m-d',
+                strtotime('last year')));
+            } catch (DuplicateOptionException $e) {
+                //this will happen if updated rows are 0 but option still exists
+            }
+        }
         $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
         $this->assertEqual(count($options), 2);
 
@@ -133,9 +141,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
 
         $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
         $this->debug(Utils::varDumpToString($options));
-        $this->assertEqual(count($options), 2, 'last_daily_email and last_weekly_email set');
-        $this->assertNotNull($options['last_daily_email'], 'Just last_daily_email set');
-        $this->assertNotNull($options['last_weekly_email'], 'Just last_daily_email set');
+        $this->assertNotNull($options['last_daily_email'], 'last_daily_email set');
         $sent = Mailer::getLastMail();
         $this->assertNotEqual('', $sent);
         $this->assertPattern('/to.*daily@example.com/', $sent);
