@@ -53,11 +53,7 @@ $TOTAL_PASSES = 0;
 $TOTAL_FAILURES = 0;
 $start_time = microtime(true);
 
-require_once THINKUP_ROOT_PATH.'tests/all_model_tests.php';
-
 require_once THINKUP_ROOT_PATH.'tests/all_plugin_tests.php';
-
-require_once THINKUP_ROOT_PATH.'tests/all_controller_tests.php';
 
 $end_time = microtime(true);
 $total_time = ($end_time - $start_time) / 60;
