@@ -201,6 +201,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $sent = Mailer::getLastMail();
         $this->assertEqual('', $sent, 'Should not send again same day');
     }
+/*
 
     public function testBothSendSetting() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
@@ -258,7 +259,6 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $this->assertPattern('/29 new lists/', $sent);
         $this->assertPattern('/This week/', $sent);
     }
-/*
 
     public function testMultiUser() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
