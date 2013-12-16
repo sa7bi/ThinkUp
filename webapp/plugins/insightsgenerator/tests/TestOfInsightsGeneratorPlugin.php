@@ -153,7 +153,6 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $sent = Mailer::getLastMail();
         $this->assertEqual('', $sent, 'Should not send again same day');
     }
-/*
     public function testWeeklySendSetting() {
         $plugin = new InsightsGeneratorPlugin();
         $day_to_run = date('D', strtotime("Sunday +".$plugin::WEEKLY_DIGEST_DAY_OF_WEEK." days"));
@@ -259,6 +258,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $this->assertPattern('/29 new lists/', $sent);
         $this->assertPattern('/This week/', $sent);
     }
+/*
 
     public function testMultiUser() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
