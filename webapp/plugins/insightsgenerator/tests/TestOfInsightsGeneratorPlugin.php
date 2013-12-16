@@ -43,7 +43,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
     public function tearDown() {
         parent::tearDown();
     }
-
+/*
     public function testDontSendAsNonAdmin() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
@@ -65,7 +65,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $options = $plugin_option_dao->getOptionsHash($plugin->folder_name, true);
         $this->assertEqual(count($options), 0);
     }
-/*
+
     public function testNeverSendSetting() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
@@ -113,7 +113,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $sent = Mailer::getLastMail();
         $this->assertEqual('', $sent);
     }
-*/
+
     public function testDailySendSetting() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $builders = array();
@@ -267,7 +267,7 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
             $this->assertPattern('/This week/', $sent);
         }
     }
-
+*/
     public function testMultiUser() {
         unlink(FileDataManager::getDataPath(Mailer::EMAIL));
         $plugin = new InsightsGeneratorPlugin();
@@ -317,5 +317,5 @@ class TestOfInsightsGeneratorPlugin extends ThinkUpUnitTestCase {
         $this->assertPattern('/daily digest to admin@example/', $last_log);
         $this->assertPattern('/daily digest to normal@example/', $last_log);
     }
-    */
+
 }
